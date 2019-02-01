@@ -31,12 +31,12 @@ public class ServiceTransportTest {
   /** Setup. */
   @BeforeEach
   public void setUp() {
-    Microservices ms = new Microservices();
 
-    gateway = ms.startAwait();
+    gateway = new Microservices().startAwait();
 
     serviceNode =
-        ms.discovery(options -> options.seeds(gateway.discovery().address()))
+        new Microservices()
+            .discovery(options -> options.seeds(gateway.discovery().address()))
             .services(new SimpleQuoteService())
             .startAwait();
   }
@@ -84,8 +84,8 @@ public class ServiceTransportTest {
     latch1.await(20, TimeUnit.SECONDS);
     TimeUnit.MILLISECONDS.sleep(100);
 
-    assertEquals(1, latch1.getCount());
-    assertTrue(!sub1.get().isDisposed());
+    assertEquals(0, latch1.getCount());
+    assertTrue(sub1.get().isDisposed());
   }
 
   @Test
@@ -112,8 +112,8 @@ public class ServiceTransportTest {
     latch1.await(20, TimeUnit.SECONDS);
     TimeUnit.MILLISECONDS.sleep(100);
 
-    assertEquals(1, latch1.getCount());
-    assertTrue(!sub1.get().isDisposed());
+    assertEquals(0, latch1.getCount());
+    assertTrue(sub1.get().isDisposed());
   }
 
   @Test
@@ -144,7 +144,7 @@ public class ServiceTransportTest {
     latch1.await(20, TimeUnit.SECONDS);
     TimeUnit.MILLISECONDS.sleep(100);
 
-    assertEquals(1, latch1.getCount());
-    assertTrue(!sub1.get().isDisposed());
+    assertEquals(0, latch1.getCount());
+    assertTrue(sub1.get().isDisposed());
   }
 }

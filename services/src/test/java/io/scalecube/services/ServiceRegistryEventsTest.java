@@ -17,25 +17,24 @@ public class ServiceRegistryEventsTest {
 
     List<ServiceDiscoveryEvent> events = new ArrayList<>();
 
-    Microservices ms = new Microservices();
-
-    Microservices seed = ms.startAwait();
+    Microservices seed = new Microservices().startAwait();
 
     seed.discovery().listen().subscribe(events::add);
 
-    Microservices ms1 = getMs(ms, seed);
+    Microservices ms1 = getMs(seed);
 
-    Microservices ms2 = getMs(ms, seed);
+    Microservices ms2 = getMs(seed);
 
     Mono.when(ms1.shutdown(), ms2.shutdown()).block(Duration.ofSeconds(6));
 
-    assertEquals(0, events.size());
+    assertEquals(4, events.size());
 
     seed.shutdown().block(Duration.ofSeconds(6));
   }
 
-  private Microservices getMs(Microservices ms, Microservices seed) {
-    return ms.discovery(options -> options.seeds(seed.discovery().address()))
+  private Microservices getMs(Microservices seed) {
+    return new Microservices()
+        .discovery(options -> options.seeds(seed.discovery().address()))
         .services(new GreetingServiceImpl())
         .startAwait();
   }
