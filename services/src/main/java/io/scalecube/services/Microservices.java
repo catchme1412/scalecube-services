@@ -123,7 +123,6 @@ public class Microservices {
   private ServiceDiscovery discovery = ServiceDiscovery.getDiscovery();
   private Consumer<ServiceDiscoveryConfig.Builder> discoveryOptions;
   private ServiceProviderErrorMapper errorMapper = DefaultErrorMapper.INSTANCE;
-  private Consumer<ServiceTransportConfig.Builder> transportOptions;
   private ServiceTransportBootstrap transportBootstrap =
       new ServiceTransportBootstrap(ServiceTransportConfig.builder(null).build());
 
@@ -151,15 +150,26 @@ public class Microservices {
   }
 
   /**
+   * Create {@code new Microservices} object with changed property defined by {@code Consumer}.
+   * For example to change metrics: define {@code create(p -> p.metrics = metrics)}.
+   *
+   * @param property property consumer to change
+   * @return
+   */
+  private Microservices create(Consumer<Microservices> property) {
+    Microservices ms = new Microservices(this);
+    property.accept(ms);
+    return ms;
+  }
+
+  /**
    * Build new {@code Microservices} based on current with different {@code metrics} property.
    *
    * @param metrics new property
    * @return new Microservice
    */
   public Microservices metrics(Metrics metrics) {
-    Microservices msNew = new Microservices(this);
-    msNew.metrics = metrics;
-    return msNew;
+    return create(p -> p.metrics = metrics);
   }
 
   /**
@@ -169,9 +179,7 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices metrics(MetricRegistry metrics) {
-    Microservices msNew = new Microservices(this);
-    msNew.metrics = new Metrics(metrics);
-    return msNew;
+    return create(p -> p.metrics = new Metrics(metrics));
   }
 
   /**
@@ -181,9 +189,7 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices tags(Map<String, String> tags) {
-    Microservices msNew = new Microservices(this);
-    msNew.tags.putAll(tags);
-    return msNew;
+    return create(p -> p.tags.putAll(tags));
   }
 
   /**
@@ -194,9 +200,7 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices services(ServiceProvider serviceProvider) {
-    Microservices msNew = new Microservices(this);
-    msNew.serviceProviders.add(serviceProvider);
-    return msNew;
+    return create(p -> p.serviceProviders.add(serviceProvider));
   }
 
   /**
@@ -206,17 +210,17 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices services(Object... services) {
-    Microservices msNew = new Microservices(this);
-    msNew.serviceProviders.add(
-        call ->
-            Arrays.stream(services)
-                .map(
-                    s ->
-                        s instanceof ServiceInfo
-                            ? (ServiceInfo) s
-                            : ServiceInfo.fromServiceInstance(s).build())
-                .collect(Collectors.toList()));
-    return msNew;
+    return create(
+        p ->
+            p.serviceProviders.add(
+                call ->
+                    Arrays.stream(services)
+                        .map(
+                            s ->
+                                s instanceof ServiceInfo
+                                    ? (ServiceInfo) s
+                                    : ServiceInfo.fromServiceInstance(s).build())
+                        .collect(Collectors.toList())));
   }
 
   /**
@@ -226,9 +230,8 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices services(ServiceInfo... services) {
-    Microservices msNew = new Microservices(this);
-    msNew.serviceProviders.add(call -> Arrays.stream(services).collect(Collectors.toList()));
-    return msNew;
+    return create(
+        p -> p.serviceProviders.add(call -> Arrays.stream(services).collect(Collectors.toList())));
   }
 
   /**
@@ -239,9 +242,7 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices serviceRegistry(ServiceRegistry serviceRegistry) {
-    Microservices msNew = new Microservices(this);
-    msNew.serviceRegistry = serviceRegistry;
-    return msNew;
+    return create(p -> p.serviceRegistry = serviceRegistry);
   }
 
   /**
@@ -252,9 +253,7 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices methodRegistry(ServiceMethodRegistry methodRegistry) {
-    Microservices msNew = new Microservices(this);
-    msNew.methodRegistry = methodRegistry;
-    return msNew;
+    return create(p -> p.methodRegistry = methodRegistry);
   }
 
   /**
@@ -264,9 +263,7 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices discovery(ServiceDiscovery discovery) {
-    Microservices msNew = new Microservices(this);
-    msNew.discovery = discovery;
-    return msNew;
+    return create(p -> p.discovery = discovery);
   }
 
   /**
@@ -277,9 +274,7 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices discovery(Consumer<ServiceDiscoveryConfig.Builder> discoveryOptions) {
-    Microservices msNew = new Microservices(this);
-    msNew.discoveryOptions = discoveryOptions;
-    return msNew;
+    return create(p -> p.discoveryOptions = discoveryOptions);
   }
 
   public ServiceDiscovery discovery() {
@@ -294,12 +289,11 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices transport(Consumer<ServiceTransportConfig.Builder> transportOptions) {
-    Microservices msNew = new Microservices(this);
-    msNew.transportOptions = transportOptions;
-    msNew.transportBootstrap =
-        new ServiceTransportBootstrap(
-            ServiceTransportConfig.builder(msNew.transportOptions).build());
-    return msNew;
+    return create(
+        p ->
+            p.transportBootstrap =
+                new ServiceTransportBootstrap(
+                    ServiceTransportConfig.builder(transportOptions).build()));
   }
 
   /**
@@ -309,9 +303,7 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices gateway(GatewayConfig config) {
-    Microservices msNew = new Microservices(this);
-    msNew.gatewayBootstrap.addConfig(config);
-    return msNew;
+    return create(p -> p.gatewayBootstrap.addConfig(config));
   }
 
   /**
@@ -321,9 +313,7 @@ public class Microservices {
    * @return new {@code Microservices}
    */
   public Microservices errorMapper(ServiceProviderErrorMapper errorMapper) {
-    Microservices msNew = new Microservices(this);
-    msNew.errorMapper = errorMapper;
-    return msNew;
+    return create(p -> p.errorMapper = errorMapper);
   }
 
   public Microservices startAwait() {
@@ -380,18 +370,18 @@ public class Microservices {
               .doOnSuccess(
                   v -> {
                     ms.shutdown
-                        .then(ms.doShutdown())
+                        .then(ms.shutdown())
                         .doFinally(s -> ms.onShutdown.onComplete())
                         .subscribe(
                             null,
                             thread ->
-                                LOGGER.warn("{} failed on doShutdown(): {}", ms, thread.toString()),
+                                LOGGER.warn("{} failed on shutdown(): {}", ms, thread.toString()),
                             () -> LOGGER.debug("Shutdown {}", ms));
                   })
               .onErrorResume(
                   ex -> {
                     // return original error then shutdown
-                    return Mono.when(Mono.error(ex), ms.doShutdown()).cast(Microservices.class);
+                    return Mono.when(Mono.error(ex), ms.shutdown()).cast(Microservices.class);
                   });
         });
   }
@@ -432,16 +422,12 @@ public class Microservices {
     return gatewayBootstrap.gatewayAddresses();
   }
 
-  private void shutdown() {
-    shutdown.onComplete();
-  }
-
   /**
    * Shutdown instance and clear resources.
    *
    * @return result of shutdown
    */
-  public Mono<Void> doShutdown() {
+  public Mono<Void> shutdown() {
     return Mono.defer(
         () ->
             Mono.whenDelayError(

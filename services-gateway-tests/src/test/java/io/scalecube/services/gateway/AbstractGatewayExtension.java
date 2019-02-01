@@ -80,7 +80,7 @@ public abstract class AbstractGatewayExtension
   public void shutdownServices() {
     if (services != null) {
       try {
-        services.doShutdown().block();
+        services.shutdown().block();
       } catch (Throwable ignore) {
         // ignore
       }
@@ -95,7 +95,7 @@ public abstract class AbstractGatewayExtension
   private void shutdownGateway() {
     if (gateway != null) {
       try {
-        gateway.doShutdown().block();
+        gateway.shutdown().block();
       } catch (Throwable ignore) {
         // ignore
       }

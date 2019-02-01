@@ -42,7 +42,7 @@ public class Example1 {
         .block(Duration.ofSeconds(2));
 
     // shut down the nodes
-    seed.doShutdown().block();
-    microservices.doShutdown().block();
+    seed.shutdown().block();
+    microservices.shutdown().block();
   }
 }

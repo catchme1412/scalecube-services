@@ -56,7 +56,7 @@ public class Example2 {
             });
 
     // shut down the nodes
-    seed.doShutdown().block();
-    microservices.doShutdown().block();
+    seed.shutdown().block();
+    microservices.shutdown().block();
   }
 }

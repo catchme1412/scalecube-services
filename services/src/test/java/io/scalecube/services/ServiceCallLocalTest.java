@@ -44,7 +44,7 @@ public class ServiceCallLocalTest extends BaseTest {
   /** Cleanup. */
   @AfterAll
   public static void tearDown() {
-    provider.doShutdown().block();
+    provider.shutdown().block();
   }
 
   @Test

@@ -50,13 +50,13 @@ public class ServiceCallRemoteTest extends BaseTest {
   @AfterAll
   public static void tearDown() {
     try {
-      gateway.doShutdown().block();
+      gateway.shutdown().block();
     } catch (Exception ignore) {
       // no-op
     }
 
     try {
-      provider.doShutdown().block();
+      provider.shutdown().block();
     } catch (Exception ignore) {
       // no-op
     }
@@ -228,7 +228,7 @@ public class ServiceCallRemoteTest extends BaseTest {
     StepVerifier.create(quotes.take(1)).expectNextCount(1).expectComplete().verify(timeout);
 
     try {
-      quotesService.doShutdown();
+      quotesService.shutdown();
     } catch (Exception ignored) {
       // no-op
     }

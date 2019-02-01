@@ -42,7 +42,7 @@ public class ServiceLocalTest extends BaseTest {
   @AfterEach
   public void cleanUp() {
     if (microservices != null) {
-      microservices.doShutdown().block(timeout);
+      microservices.shutdown().block(timeout);
     }
   }
 

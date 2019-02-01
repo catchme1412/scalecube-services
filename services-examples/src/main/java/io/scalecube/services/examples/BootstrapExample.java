@@ -81,7 +81,7 @@ public class BootstrapExample {
     String helloWorld = helloWorldService.helloWorld().block(Duration.ofSeconds(6));
     System.out.println("Result of calling hello world business logic is ... => " + helloWorld);
 
-    Mono.when(gateway.doShutdown(), node1.doShutdown(), node2.doShutdown(), node3.doShutdown())
+    Mono.when(gateway.shutdown(), node1.shutdown(), node2.shutdown(), node3.shutdown())
         .block(Duration.ofSeconds(5));
   }
 

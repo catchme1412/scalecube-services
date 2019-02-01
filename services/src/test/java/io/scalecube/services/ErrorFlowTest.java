@@ -41,8 +41,8 @@ public class ErrorFlowTest {
 
   @AfterAll
   public static void shutdownNodes() {
-    consumer.doShutdown().block();
-    provider.doShutdown().block();
+    consumer.shutdown().block();
+    provider.shutdown().block();
   }
 
   @Test

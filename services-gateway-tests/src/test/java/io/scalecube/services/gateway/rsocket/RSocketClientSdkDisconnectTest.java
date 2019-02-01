@@ -71,7 +71,7 @@ class RSocketClientSdkDisconnectTest {
     }
     if (seed != null) {
       try {
-        seed.doShutdown().block(SHUTDOWN_TIMEOUT);
+        seed.shutdown().block(SHUTDOWN_TIMEOUT);
       } catch (Exception ignore) {
         // no-op
       }
@@ -89,7 +89,7 @@ class RSocketClientSdkDisconnectTest {
                 .doOnSubscribe(
                     subscription ->
                         Mono.delay(shutdownAt)
-                            .doOnSuccess(ignore -> seed.doShutdown().subscribe())
+                            .doOnSuccess(ignore -> seed.shutdown().subscribe())
                             .subscribe()))
         .thenConsumeWhile(
             response -> {

@@ -53,10 +53,10 @@ public class DistributedBenchmarkState extends AbstractBenchmarkState<Distribute
   protected void afterAll() throws Exception {
     super.afterAll();
     if (services != null) {
-      services.doShutdown().block();
+      services.shutdown().block();
     }
     if (gateway != null) {
-      gateway.doShutdown().block();
+      gateway.shutdown().block();
     }
   }
 

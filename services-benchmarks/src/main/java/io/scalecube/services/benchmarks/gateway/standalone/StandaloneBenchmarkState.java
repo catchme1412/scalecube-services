@@ -46,7 +46,7 @@ public class StandaloneBenchmarkState extends AbstractBenchmarkState<StandaloneB
   protected void afterAll() throws Exception {
     super.afterAll();
     if (microservices != null) {
-      microservices.doShutdown().block();
+      microservices.shutdown().block();
     }
   }
 

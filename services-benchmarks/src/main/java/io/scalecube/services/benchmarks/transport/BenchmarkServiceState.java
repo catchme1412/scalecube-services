@@ -46,7 +46,7 @@ public class BenchmarkServiceState extends BenchmarkState<BenchmarkServiceState>
   @Override
   public void afterAll() {
     try {
-      Mono.when(node.doShutdown(), seed.doShutdown()).block(SHUTDOWN_TIMEOUT);
+      Mono.when(node.shutdown(), seed.shutdown()).block(SHUTDOWN_TIMEOUT);
     } catch (Throwable ignore) {
       // ignore
     }

@@ -46,14 +46,14 @@ public class ServiceTransportTest {
   public void cleanUp() {
     if (gateway != null) {
       try {
-        gateway.doShutdown();
+        gateway.shutdown();
       } catch (Throwable ignore) {
         // no-op
       }
     }
     if (serviceNode != null) {
       try {
-        serviceNode.doShutdown();
+        serviceNode.shutdown();
       } catch (Throwable ignore) {
         // no-op
       }
@@ -79,7 +79,7 @@ public class ServiceTransportTest {
 
     // service node goes down
     TimeUnit.SECONDS.sleep(3);
-    serviceNode.doShutdown().block(Duration.ofSeconds(6));
+    serviceNode.shutdown().block(Duration.ofSeconds(6));
 
     latch1.await(20, TimeUnit.SECONDS);
     TimeUnit.MILLISECONDS.sleep(100);
@@ -107,7 +107,7 @@ public class ServiceTransportTest {
 
     // service node goes down
     TimeUnit.SECONDS.sleep(3);
-    serviceNode.doShutdown().block(Duration.ofSeconds(6));
+    serviceNode.shutdown().block(Duration.ofSeconds(6));
 
     latch1.await(20, TimeUnit.SECONDS);
     TimeUnit.MILLISECONDS.sleep(100);
@@ -139,7 +139,7 @@ public class ServiceTransportTest {
 
     // service node goes down
     TimeUnit.SECONDS.sleep(3);
-    serviceNode.doShutdown().block(Duration.ofSeconds(6));
+    serviceNode.shutdown().block(Duration.ofSeconds(6));
 
     latch1.await(20, TimeUnit.SECONDS);
     TimeUnit.MILLISECONDS.sleep(100);

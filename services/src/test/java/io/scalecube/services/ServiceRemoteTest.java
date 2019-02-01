@@ -42,13 +42,13 @@ public class ServiceRemoteTest extends BaseTest {
   @AfterAll
   public static void tearDown() {
     try {
-      gateway.doShutdown().block();
+      gateway.shutdown().block();
     } catch (Exception ignore) {
       // no-op
     }
 
     try {
-      provider.doShutdown().block();
+      provider.shutdown().block();
     } catch (Exception ignore) {
       // no-op
     }
@@ -201,7 +201,7 @@ public class ServiceRemoteTest extends BaseTest {
     Publisher<String> future = service.callGreeting("joe");
 
     assertTrue(" hello to: joe".equals(Mono.from(future).block(Duration.ofSeconds(1))));
-    provider.doShutdown().block();
+    provider.shutdown().block();
   }
 
   @Test
@@ -221,7 +221,7 @@ public class ServiceRemoteTest extends BaseTest {
     CoarseGrainedService service = gateway.call().create().api(CoarseGrainedService.class);
     Publisher<String> future = service.callGreeting("joe");
     assertTrue(" hello to: joe".equals(Mono.from(future).block(Duration.ofSeconds(1))));
-    provider.doShutdown().block();
+    provider.shutdown().block();
   }
 
   @Test
@@ -244,7 +244,7 @@ public class ServiceRemoteTest extends BaseTest {
             () -> Mono.from(service.callGreetingTimeout("joe")).block());
     assertTrue(exception.getMessage().contains("Did not observe any item or terminal signal"));
     System.out.println("done");
-    ms.doShutdown();
+    ms.shutdown();
   }
 
   @Test
@@ -266,7 +266,7 @@ public class ServiceRemoteTest extends BaseTest {
     String response = service.callGreetingWithDispatcher("joe").block(Duration.ofSeconds(5));
     assertEquals(response, " hello to: joe");
 
-    provider.doShutdown().block();
+    provider.shutdown().block();
   }
 
   @Test

@@ -27,11 +27,11 @@ public class ServiceRegistryEventsTest {
 
     Microservices ms2 = getMs(ms, seed);
 
-    Mono.when(ms1.doShutdown(), ms2.doShutdown()).block(Duration.ofSeconds(6));
+    Mono.when(ms1.shutdown(), ms2.shutdown()).block(Duration.ofSeconds(6));
 
     assertEquals(0, events.size());
 
-    seed.doShutdown().block(Duration.ofSeconds(6));
+    seed.shutdown().block(Duration.ofSeconds(6));
   }
 
   private Microservices getMs(Microservices ms, Microservices seed) {
